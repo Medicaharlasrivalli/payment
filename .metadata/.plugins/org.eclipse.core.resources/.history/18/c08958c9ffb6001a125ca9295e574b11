@@ -1,0 +1,86 @@
+package com.corebanking.controller;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.corebanking.model.BankCustomer;
+import com.corebanking.model.FinalResponse;
+import com.corebanking.model.Response;
+
+@RestController
+public class CorebankingController {
+
+	@Autowired
+	private BankCustomerRepo repo;
+	
+	@Autowired
+	private ResponseRepository repo1;
+	
+	@Autowired
+	private FinalResponseRepository repo2;
+	
+	@PutMapping(path="/user/{id}/payment/direct")
+	public FinalResponse processLocalPayments(@PathVariable("id") int id,@RequestParam("tid") String tid) {
+		Response r=repo1.findByTid(tid);
+		String status;
+		Date date=java.util.Calendar.getInstance().getTime();
+		String time=date.toString();
+		BankCustomer bcus=repo.findByAccountno(r.getBaseaccountno());
+		BankCustomer bcus1=repo.findByAccountno(r.getTargetaccountno());
+		if(bcus1!=null)
+		{
+		if(bcus.getBalance()>r.getAmount())
+		{
+			double detect=bcus.getBalance()-r.getAmount();
+			double add=bcus1.getBalance()+r.getAmount();
+			bcus.setBalance(detect);
+			bcus1.setBalance(add);
+			repo.save(bcus);
+			repo.save(bcus1);
+			status="success";
+		}
+		else
+			status="failure due to unavailabilty of amount";
+		}
+		else
+			status="target account not found";
+		FinalResponse fr=new FinalResponse(r.getTid(),r.getBaseaccountno(),status,time);
+		repo2.save(fr);
+		return fr;
+	}
+	@SuppressWarnings("null")
+	@PutMapping(path="/user/{id}/payment/direct")
+	public FinalResponse processCrossPayments(@PathVariable("id") int id,@RequestParam("tid") String tid) {
+		Response r=repo1.findByTid(tid);
+		String status;
+		Date date=java.util.Calendar.getInstance().getTime();
+		String time=date.toString();
+		BankCustomer bcus=repo.findByAccountno(r.getBaseaccountno());
+		BankCustomer bcus1=repo.findByAccountno(r.getTargetaccountno());
+		if(bcus1!=null || bcus1.getCurrency()!=r.getTargetcurrency())
+		{
+			if(bcus.getBalance()>r.getAmount())
+			{
+				double detect=bcus.getBalance()-r.getAmount();
+				double add=bcus1.getBalance()+r.getTamount();
+				bcus.setBalance(detect);
+				bcus1.setBalance(add);
+				repo.save(bcus);
+				repo.save(bcus1);
+				status="success";
+			}
+			else
+				status="failure due to unavailabilty of amount";
+		}
+		else
+			status="target account not found or currency not matched";
+		FinalResponse fr=new FinalResponse(r.getTid(),r.getBaseaccountno(),status,time);
+		repo2.save(fr);
+		return fr;
+	}
+}

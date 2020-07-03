@@ -1,0 +1,23 @@
+package com.corebanking.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.corebanking.model.Response;
+
+@RestController
+public class CorebankingController {
+
+	@Autowired
+	private PaymentServiceProxy pro;
+	
+	@PutMapping("/user/{id}/payment/direct?amount={amount}&targetAccNo={target}&targetCurrency={currency}")
+	public Response processLocalPayment(@PathVariable("id") int id,@PathVariable("amount") double amount,@PathVariable("targert") long AccNum,@PathVariable("currency") String cur)
+	{
+		Response r=pro.doLoalPayments(id, amount, AccNum, cur);
+		return r;
+	}
+	
+}

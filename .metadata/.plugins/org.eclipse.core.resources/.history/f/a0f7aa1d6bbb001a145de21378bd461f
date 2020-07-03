@@ -1,0 +1,9 @@
+package com.payment.security;
+
+import org.springframework.boot.autoconfigure.session.RedisSessionProperties.ConfigureAction;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SecurityConfig {
+
+}

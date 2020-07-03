@@ -1,0 +1,10 @@
+package com.payment.security;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.security.model.User;
+import java.lang.String;
+
+public interface UserRespository extends JpaRepository<User,String>{
+	 User findByUsername(String username);
+}

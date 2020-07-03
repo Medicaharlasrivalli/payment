@@ -1,0 +1,15 @@
+package com.payment.controller;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.payment.model.FinalResponse;
+import com.payment.model.Response;
+
+@FeignClient(name = "core-banking-service")
+public interface CoreBankingProxy {
+	
+	@RequestMapping(method=RequestMethod.GET,produces="application/json",path="/user/{id}/payment/direct")
+	public FinalResponse processLocalPayments(Response r);
+}

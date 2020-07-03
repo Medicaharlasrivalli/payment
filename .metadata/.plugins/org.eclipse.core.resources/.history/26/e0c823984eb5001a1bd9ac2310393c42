@@ -1,0 +1,14 @@
+package com.payment.controller;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import com.payment.model.FinalResponse;
+import com.payment.model.Response;
+
+@FeignClient(name="core-banking-service", url="http://localhost:8181")
+public interface CoreBankingProxy {
+	
+	@PutMapping("/")
+	FinalResponse processLocalPayments(Response r);
+}

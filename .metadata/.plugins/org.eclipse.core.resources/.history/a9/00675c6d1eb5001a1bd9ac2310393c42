@@ -1,0 +1,5 @@
+package com.corebanking.model;
+
+public class BankCustomer {
+
+}

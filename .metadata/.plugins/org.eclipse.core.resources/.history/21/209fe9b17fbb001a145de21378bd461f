@@ -1,0 +1,37 @@
+package com.security.model;
+
+public class AuthenticationRequest {
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public long getAccountno() {
+		return accountno;
+	}
+	public void setAccountno(long accountno) {
+		this.accountno = accountno;
+	}
+	public int getPassword() {
+		return password;
+	}
+	public AuthenticationRequest(int id, int password) {
+		super();
+		this.id = id;
+		this.password = password;
+	}
+	public void setPassword(int password) {
+		this.password = password;
+	}
+	private int id;
+	private String name;
+	private long accountno;
+	private int password;
+}

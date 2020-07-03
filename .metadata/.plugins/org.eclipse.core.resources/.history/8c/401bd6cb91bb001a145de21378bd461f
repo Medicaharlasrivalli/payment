@@ -1,0 +1,9 @@
+package com.security.controller;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.security.model.User;
+
+public interface UserRespository extends JpaRepository<User,String>{
+	
+}

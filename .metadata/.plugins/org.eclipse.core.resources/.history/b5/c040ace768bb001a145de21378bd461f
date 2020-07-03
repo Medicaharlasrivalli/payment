@@ -1,0 +1,69 @@
+package com.payment.model;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Rsponse {
+	@Id
+	private String tid;
+	public String getTid() {
+		return tid;
+	}
+	public void setTid(String tid) {
+		this.tid = tid;
+	}
+	private long baseaccountno;
+	private long targetaccountno;
+	private String basecurrency;
+	private String targetcurrency;
+	private double tamount;
+	public Rsponse(String tid, long baseaccountno, long targetaccountno, String basecurrency, String targetcurrency,
+			double tamount, double amount) {
+		super();
+		this.tid = tid;
+		this.baseaccountno = baseaccountno;
+		this.targetaccountno = targetaccountno;
+		this.basecurrency = basecurrency;
+		this.targetcurrency = targetcurrency;
+		this.tamount = tamount;
+		this.amount = amount;
+	}
+	public double getTamount() {
+		return tamount;
+	}
+	public void setTamount(double tamount) {
+		this.tamount = tamount;
+	}
+	public long getBaseaccountno() {
+		return baseaccountno;
+	}
+	public void setBaseaccountno(long baseaccountno) {
+		this.baseaccountno = baseaccountno;
+	}
+	public long getTargetaccountno() {
+		return targetaccountno;
+	}
+	public void setTargetaccountno(long targetaccountno) {
+		this.targetaccountno = targetaccountno;
+	}
+	public String getBasecurrency() {
+		return basecurrency;
+	}
+	public void setBasecurrency(String basecurrency) {
+		this.basecurrency = basecurrency;
+	}
+	public String getTargetcurrency() {
+		return targetcurrency;
+	}
+	public void setTargetcurrency(String targetcurrency) {
+		this.targetcurrency = targetcurrency;
+	}
+	public double getAmount() {
+		return amount;
+	}
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+	private double amount;
+}

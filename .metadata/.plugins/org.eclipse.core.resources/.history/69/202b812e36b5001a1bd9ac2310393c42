@@ -1,0 +1,12 @@
+package com.payment.controller;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.payment.model.FinalResponse;
+import com.payment.model.Response;
+
+@FeignClient(name="core-banking-service")
+public interface CoreBankingProxy {
+	FinalResponse processLocalPayment(@RequestParam("res") Response r);
+}

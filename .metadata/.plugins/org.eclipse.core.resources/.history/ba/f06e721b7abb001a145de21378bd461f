@@ -1,0 +1,12 @@
+package com.security.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+public class SecurityController {
+
+	@GetMapping("user/{id}")
+	public String welcome()
+	{
+		return "welcome.jsp";
+	}
+}

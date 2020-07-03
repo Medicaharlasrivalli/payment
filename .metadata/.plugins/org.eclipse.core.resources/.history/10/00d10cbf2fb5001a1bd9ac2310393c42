@@ -1,0 +1,13 @@
+package com.corebanking.controller;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import com.corebanking.model.Response;
+
+@FeignClient(name="payment-service", url="http://localhost:8282")
+public interface PaymentServiceProxy {
+
+	@PutMapping("/user/{id}/payment/direct")
+	Response doLoalPayments(@PathVariable("id") int id);
+}

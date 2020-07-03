@@ -1,0 +1,25 @@
+package com.payment.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import io.jsonwebtoken.ExpiredJwtException;
+
+public class UserService {
+	
+	
+@Autowired
+JwtUtil jwtUtil;
+
+public boolean isAuthenticated(String username, String token) throws ExpiredJwtException{
+		
+		String tokenid = token.substring(7); 
+		
+		if (jwtUtil.validateToken(tokenid,username)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		
+	}
+}

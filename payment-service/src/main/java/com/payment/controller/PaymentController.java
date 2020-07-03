@@ -1,0 +1,128 @@
+package com.payment.controller;
+
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.payment.model.AuthenticationRequest;
+import com.payment.model.AuthenticationResponse;
+import com.payment.model.Customer;
+import com.payment.model.FinalResponse;
+import com.payment.model.Request;
+import com.payment.model.Response;
+import com.payment.security.JwtUtil;
+import com.payment.security.MyUserDetailsService;
+import com.payment.security.UserService;
+
+@RestController
+public class PaymentController {
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private JwtUtil jwtTokenUtil;
+
+	@Autowired
+	private MyUserDetailsService userDetailsService;
+	
+	@Autowired
+	private PaymentRepository repo;
+	
+	@Autowired
+	private ResponseRepository repo1;
+	
+	@Autowired
+	private CoreBankingProxy pro;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private ForexServiceProxy fpro;
+	
+	@PutMapping("/user/{username}/payment/direct")
+	public Object doLocalPayments(@PathVariable("username") String username,@RequestBody Request res,@RequestHeader("Authorization") String token) {
+		if (userService.isAuthenticated(username, token)) {
+		String tid=UUID.randomUUID().toString();
+		Customer cus=repo.findByUsername(username);
+		Response r=new Response(tid,cus.getAccountno(),res.getTargetAccNo(),"INR",res.getTargetCurrency(),res.getAmount(),res.getAmount());
+		repo1.save(r);
+		FinalResponse fe=pro.processLocalPayments(username,tid);
+		return fe;}
+		else {
+			return "Not Authenticated";
+		}
+		
+	}
+	@PutMapping("user/{username}/payment/cross")
+	public Object doCrossPayments(@PathVariable("username") String username,@RequestBody Request res,@RequestHeader("Authorization") String token) {
+		if (userService.isAuthenticated(username, token)) {
+		String tid=UUID.randomUUID().toString();
+		Customer cus=repo.findByUsername(username);
+		String cur=res.getTargetCurrency()+"_INR";
+		System.out.print(cur);
+		double f=fpro.getRates(cur);
+		double tamount=res.getAmount()/f;
+		Response r=new Response(tid,cus.getAccountno(),res.getTargetAccNo(),"INR",res.getTargetCurrency(),tamount,res.getAmount());
+		repo1.save(r);
+		FinalResponse fe=pro.processCrossPayments(username,tid);
+		return fe;}
+		else {
+			return "Not Authenticated";
+		}
+	}
+	
+	@GetMapping("user/{username}/paymentStatus")
+	public Object getStatus(@PathVariable("username") String username,@RequestParam("tid") String tid,@RequestHeader("Authorization") String token) {
+		
+		try {
+		if (userService.isAuthenticated(username, token)) {
+		
+			return pro.processgetStatus(username, tid);
+		}
+		else {
+			return "Not Authenticated";
+		}
+		}
+		catch(Exception e) {
+			
+			System.out.println("Hii");
+			return "Jwt invalid token";
+		}
+		
+	}
+	@RequestMapping(value="/authenticate",method=RequestMethod.POST)
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+
+		try {
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(authenticationRequest.getId(), authenticationRequest.getPassword())
+			);
+		}
+		catch (BadCredentialsException e) {
+			throw new Exception("Incorrect username or password", e);
+		}
+
+
+		final UserDetails userDetails = userDetailsService
+				.loadUserByUsername(authenticationRequest.getId());
+
+		final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+		return ResponseEntity.ok(new AuthenticationResponse(jwt));
+	}
+}

@@ -1,0 +1,22 @@
+package com.payment.controller;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.payment.model.FinalResponse;
+
+@FeignClient(name = "core-banking-service" ,url="http://localhost:8181")
+public interface CoreBankingProxy {
+	
+	@PutMapping(path="/user/{id}/payment/direct/process")
+	public FinalResponse processLocalPayments(@PathVariable("id") int id,@RequestParam("tid") String tid);
+	
+	@PutMapping(path="/user/{id}/payment/cross")
+	public FinalResponse processCrossPayments(@PathVariable("id") int id,@RequestParam("tid") String tid);
+	
+	@GetMapping(path="/user/{id}/paymentStatus")
+	public FinalResponse processgetStatus(@PathVariable("id") int id,@RequestParam("tid") String tid);
+}

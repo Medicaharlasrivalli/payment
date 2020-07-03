@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="forex-service"/>
+<aop-project name="payment-service"/>
+<aop-project name="eureka-server"/>
+<aop-project name="core-banking-service"/>
+</aop-reference-model>
