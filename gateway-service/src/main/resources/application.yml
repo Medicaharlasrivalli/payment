@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: userModule
+        uri: http://localhost:8282/
+        predicates:
+        - Path=/user/**,/authenticate/**
+  application:
+    name: gateway-service
+server:
+  port: 8081

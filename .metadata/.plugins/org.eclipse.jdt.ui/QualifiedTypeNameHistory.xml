@@ -24,4 +24,6 @@
 <fullyQualifiedTypeName name="org.springframework.cloud.openfeign.FeignClient"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.GetMapping"/>
+<fullyQualifiedTypeName name="io.jsonwebtoken.MalformedJwtException"/>
+<fullyQualifiedTypeName name="io.jsonwebtoken.SignatureException"/>
 </qualifiedTypeNameHistroy>

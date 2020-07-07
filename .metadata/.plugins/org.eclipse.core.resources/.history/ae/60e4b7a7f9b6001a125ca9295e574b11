@@ -1,5 +1,0 @@
-package com.forex.controller;
-
-public interface MyFeignClient {
-
-}
